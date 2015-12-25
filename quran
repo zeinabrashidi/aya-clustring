@@ -1,0 +1,34 @@
+import codecs
+from itertools import izip
+f = codecs.open("quran.txt" , 'r' ,encoding="utf-8")
+g = codecs.open("fa.txt" , 'r' ,encoding="utf-8")
+d = f.readlines()
+h = g.readlines()
+e = f.readline()
+l = e[e.find('|')+1:]
+a = []
+b = []
+c = []
+h1 = []
+dic = {}
+i=0
+for lined,lineh in izip(d,h):
+    b = lined[:lined.find('|')]
+    line1 = lined[len(b)+1:]
+    c = line1[:line1.find('|')]
+    line2 = line1[len(c)+1:]
+    
+    line10 = lineh[len(lineh[:lineh.find('|')])+1:]
+    h1 = line10[len(line10[:line10.find('|')])+1:]
+    if line2 != l:
+        dic = {
+            "sura" : b,
+            "aya" : c,
+            "arabic" : line2,
+            "persian" : h1
+            }
+    a.append(dic)
+    i+= 1
+
+f.close()
+g.close()
