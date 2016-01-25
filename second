@@ -1,0 +1,80 @@
+import codecs
+from itertools import izip
+from nltk import word_tokenize
+from nltk import stem
+from nltk.corpus import stopwords
+import re
+from sklearn.cluster import KMeans
+from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction import DictVectorizer
+import time
+
+start = time.time()
+f = codecs.open("quran.txt" , 'r' ,encoding="utf-8")
+g = codecs.open("fa.txt" , 'r' ,encoding="utf-8")
+d = f.readlines()
+h = g.readlines()
+e = f.readline()
+l = e[e.find('|')+1:]
+a = []
+b = []
+c = []
+h1 = []
+words=[]
+dic = {}
+'''ابتدا شماره ي سوره بعد شماره ي آيه و بعد متن آيه و ترجمه ي آن را مي نويسد'''
+i=0
+for lined,lineh in izip(d,h):
+    b = lined[:lined.find('|')]
+    line1 = lined[len(b)+1:]
+    c = line1[:line1.find('|')]
+    line2 = line1[len(c)+1:]
+    
+    line10 = lineh[len(lineh[:lineh.find('|')])+1:]
+    h1 = line10[len(line10[:line10.find('|')])+1:]
+    if line2 != l:
+        dic = {
+            "sura" : b,
+            "aya" : c,
+            "arabic" : line2,
+            "persian" : h1
+            }
+    a.append(dic)
+    i+= 1
+    """کلمات هر آيه را جدا مي کند"""
+    word = line2.split()
+    for w in word:
+        for i in range(len(w)):
+            words[i].append(w)
+            
+for j in range(14):
+    print "{'sura':"+a[j]["sura"]+ ", 'aya':"+ a[j]["aya"]+ ", 'arabic':" +a[j]["arabic"]+ ", 'persian':" +a[j]["persian"]+'}'
+
+    """ريشه يابي"""
+for i in range(len(words)):
+    for j in range(len(500)):
+        stemmer = stem.ISRIStemmer()
+        stemmer.stem(words[i][j])
+
+""" حذف کلمات توقف"""
+important_word=[]
+for i in range(len(words)):
+    for j in range(len(500)):
+        transformer = TfidfTransformer()
+        trainVectorizerArray = vectorizer.fit_transform().toarray()
+        testVectorizerArray = vectorizer.transform(words[i][j]).toarray()
+        if words[i][j] not in stopwords.words('arabic'):
+            del words[i][j] #حذف کلمه ي توقف
+        vectorizer = TfidfVectorizer(lowercase=False, max_df=0.8)
+        fs_train = vectorizer.fit_transform(word[i][j])
+        kmeans = KMeans(n_clusters=2)
+        kmeans.fit(fs_train)
+        predict1 = kmeans.predict(fs_train)
+
+print predict1
+print end - start        
+f.close()
+g.close()
+end = time.time()
